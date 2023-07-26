@@ -2,7 +2,7 @@ from django.shortcuts import render
 
 from rest_framework import viewsets
 from .models import User, Bio, TechnicalSkills, QualificationDetails, Projects
-from .serializers import UserSerializer, BioSerializer, TechnicalSkillsSerializer, QualificationDetailsSerializer, ProjectsSerializer
+from .serializers import UserSerializer, BioSerializer, TechnicalSkillsSerializer, QualificationDetailsSerializer, ProjectsSerializer,UserDetailsSerializer
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
@@ -23,3 +23,13 @@ class QualificationDetailsViewSet(viewsets.ModelViewSet):
 class ProjectsViewSet(viewsets.ModelViewSet):
     queryset = Projects.objects.all()
     serializer_class = ProjectsSerializer
+
+
+# def index(request):
+
+#     return render(request,'index.html')
+
+class UserDetailsViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserDetailsSerializer
+    lookup_field = 'id'

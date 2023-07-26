@@ -12,17 +12,35 @@ class BioSerializer(serializers.ModelSerializer):
         model = Bio
         fields = ('BioID', 'UserID', 'Role', 'AboutMe')
 
+# serializers.py
+
 class TechnicalSkillsSerializer(serializers.ModelSerializer):
+    UserID = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+
     class Meta:
         model = TechnicalSkills
         fields = ('SkillID', 'UserID', 'CodingLanguages', 'OtherTechnologies')
-
+        
 class QualificationDetailsSerializer(serializers.ModelSerializer):
+    UserID = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+
     class Meta:
         model = QualificationDetails
         fields = ('QualificationID', 'UserID', 'DegreeName', 'YearFrom', 'YearTo', 'CGPA', 'CollegeSchoolName')
+
 
 class ProjectsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Projects
         fields = ('ProjectID', 'UserID', 'ProjectTitle', 'ProjectLink', 'ProjectDescription')
+
+
+class UserDetailsSerializer(serializers.ModelSerializer):
+    bio = BioSerializer()
+    technical_skills = TechnicalSkillsSerializer(many=True)
+    qualification_details = QualificationDetailsSerializer(many=True)
+    projects = ProjectsSerializer(many=True)
+
+    class Meta:
+        model = User
+        fields = ('id', 'Username', 'Name', 'Email', 'LinkedInURL', 'GitHubURL', 'bio', 'technical_skills', 'qualification_details', 'projects')

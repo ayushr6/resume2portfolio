@@ -19,8 +19,8 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
 # from resume2portfolio import views
-from resume2portfolio.views import UserViewSet, BioViewSet, TechnicalSkillsViewSet, QualificationDetailsViewSet, ProjectsViewSet
-
+from resume2portfolio.views import UserViewSet, BioViewSet, TechnicalSkillsViewSet, QualificationDetailsViewSet, ProjectsViewSet,UserDetailsSerializer
+from resume2portfolio.views import UserDetailsViewSet
 # Create a router and register our viewsets with it.
 router =routers.DefaultRouter()
 router.register(r'users', UserViewSet)
@@ -28,7 +28,9 @@ router.register(r'bio', BioViewSet)
 router.register(r'technical-skills', TechnicalSkillsViewSet)
 router.register(r'qualification-details', QualificationDetailsViewSet)
 router.register(r'projects', ProjectsViewSet)
+router.register(r'user-details', UserDetailsViewSet, basename='user-details')
 urlpatterns = [
     path('admin/', admin.site.urls),
+    # path("",index),
     path('api/', include(router.urls)),
 ]

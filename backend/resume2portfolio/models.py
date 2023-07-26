@@ -1,14 +1,12 @@
-from django.db import models
+# models.py
 
-# from django.db import models
+from django.db import models
 
 class User(models.Model):
     # Django automatically creates 'id' field as the primary key
-    Username = models.CharField(max_length=100,null=True)
+    Username = models.CharField(max_length=100, null=True)
     Name = models.CharField(max_length=100, null=True)
-
     Email = models.EmailField(default='', unique=True)
-    # Password = models.CharField(max_length=100)
     LinkedInURL = models.URLField(blank=True, null=True)
     GitHubURL = models.URLField(blank=True, null=True)
     
@@ -26,7 +24,7 @@ class Bio(models.Model):
 
 class TechnicalSkills(models.Model):
     SkillID = models.AutoField(primary_key=True)
-    UserID = models.OneToOneField(User, on_delete=models.CASCADE, related_name='technical_skills')
+    UserID = models.ForeignKey(User, on_delete=models.CASCADE, related_name='technical_skills')
     CodingLanguages = models.TextField()
     OtherTechnologies = models.TextField()
     
@@ -35,7 +33,7 @@ class TechnicalSkills(models.Model):
 
 class QualificationDetails(models.Model):
     QualificationID = models.AutoField(primary_key=True)
-    UserID = models.OneToOneField(User, on_delete=models.CASCADE, related_name='qualification_details')
+    UserID = models.ForeignKey(User, on_delete=models.CASCADE, related_name='qualification_details')
     DegreeName = models.CharField(max_length=100)
     YearFrom = models.PositiveIntegerField()
     YearTo = models.PositiveIntegerField()
