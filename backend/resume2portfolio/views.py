@@ -4,6 +4,9 @@ from rest_framework import viewsets
 from .models import User, Bio, TechnicalSkills, QualificationDetails, Projects
 from .serializers import UserSerializer, BioSerializer, TechnicalSkillsSerializer, QualificationDetailsSerializer, ProjectsSerializer,UserDetailsSerializer
 
+from django.shortcuts import render, redirect
+from .forms import UserForm, BioForm, TechnicalSkillsForm, QualificationDetailsForm, ProjectsForm
+
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -33,3 +36,40 @@ class UserDetailsViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserDetailsSerializer
     lookup_field = 'id'
+
+
+
+
+def create_user(request, user_id=None):
+    if user_id:
+        # If user_id is provided, fetch the user instance from the database
+        user_instance = User.objects.get(pk=user_id)
+    else:
+        user_instance = None
+
+    if request.method == 'POST':
+        form = UserForm(request.POST, instance=user_instance)
+        if form.is_valid():
+            form.save()
+            return redirect('bio_form', user_id=user_id) 
+    else:
+        form = UserForm(instance=user_instance)
+
+    return render(request, 'user_form.html', {'form': form})
+
+
+
+
+def bio_form(request, user_id):
+    user = User.objects.get(pk=user_id)
+
+    if request.method == 'POST':
+        form = BioForm(request.POST, instance=user.bio)
+        if form.is_valid():
+            form.instance.UserID = user
+            form.save()
+            return redirect('success_page')
+    else:
+        form = BioForm(instance=user.bio)
+
+    return render(request, 'bio_form.html', {'form': form})

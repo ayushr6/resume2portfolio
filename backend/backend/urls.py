@@ -17,10 +17,12 @@ Including another URLconf
 from django.contrib import admin
 
 from django.urls import path, include
+
+# from . import views
 from rest_framework import routers
 # from resume2portfolio import views
 from resume2portfolio.views import UserViewSet, BioViewSet, TechnicalSkillsViewSet, QualificationDetailsViewSet, ProjectsViewSet,UserDetailsSerializer
-from resume2portfolio.views import UserDetailsViewSet
+from resume2portfolio.views import UserDetailsViewSet,create_user,bio_form
 # Create a router and register our viewsets with it.
 router =routers.DefaultRouter()
 router.register(r'users', UserViewSet)
@@ -33,4 +35,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     # path("",index),
     path('api/', include(router.urls)),
+    path('create_user/', create_user, name='create_user'),
+    
+    path('update_user/<int:user_id>/', create_user, name='update_user'),
+    path('bio_form/<int:user_id>/', bio_form, name='bio_form'),
 ]
