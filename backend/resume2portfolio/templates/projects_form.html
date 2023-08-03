@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Projects Form
+{% endblock %}
+
+{% block content %}
+<h1>Projects Form</h1>
+<form id="projects-form" method="post">
+    {% csrf_token %}
+    {{ formset.management_form }}
+    <div id="project-forms">
+        {% for form in formset %}
+            <div class="form-row">
+                {{ form.ProjectTitle.label_tag }}
+                {{ form.ProjectTitle }}
+                {{ form.ProjectLink.label_tag }}
+                {{ form.ProjectLink }}
+                {{ form.ProjectDescription.label_tag }}
+                {{ form.ProjectDescription }}
+                <button type="button" class="delete-project-btn" data-project-id="{{ form.instance.pk }}">Delete</button>
+            </div>
+        {% endfor %}
+    </div>
+    <button type="button" class="add-project-btn">Add More Projects</button>
+    <input type="submit" value="Submit">
+</form>
+
+<script>
+
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const projectsForm = document.getElementById('projects-form');
+            const projectFormsContainer = document.getElementById('project-forms');
+
+            // Function to handle deleting a project
+            function deleteProject(projectId) {
+                fetch(`/delete_project/${projectId}/`, { method: 'POST', headers: { 'X-CSRFToken': getCookie('csrftoken') } })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Reload the page to update the form
+                            location.reload();
+                        }
+                    });
+            }
+
+            // Function to get the value of a cookie
+            function getCookie(name) {
+                const value = `; ${document.cookie}`;
+                const parts = value.split(`; ${name}=`);
+                if (parts.length === 2) return parts.pop().split(';').shift();
+            }
+
+            // Attach click event to delete buttons
+            const deleteButtons = document.getElementsByClassName('delete-project-btn');
+            Array.from(deleteButtons).forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const projectId = this.getAttribute('data-project-id');
+                    deleteProject(projectId);
+                });
+            });
+
+            // Function to add a new project form
+            function addProjectForm() {
+                const formIdx = projectFormsContainer.getElementsByClassName('form-row').length;
+                const form = document.createElement('div');
+                form.innerHTML = `
+                    <div class="form-row">
+                        <label for="id_projects-${formIdx}-ProjectTitle">Project Title:</label>
+                        <input type="text" name="projects-${formIdx}-ProjectTitle" id="id_projects-${formIdx}-ProjectTitle">
+                        <label for="id_projects-${formIdx}-ProjectLink">Project Link:</label>
+                        <input type="url" name="projects-${formIdx}-ProjectLink" id="id_projects-${formIdx}-ProjectLink">
+                        <label for="id_projects-${formIdx}-ProjectDescription">Project Description:</label>
+                        <textarea name="projects-${formIdx}-ProjectDescription" id="id_projects-${formIdx}-ProjectDescription"></textarea>
+                        <button type="button" class="delete-project-btn" data-project-id="new-${formIdx}">Delete</button>
+                    </div>
+                `;
+                projectFormsContainer.appendChild(form);
+
+                // Attach click event to delete button of the new form
+                const newDeleteBtn = form.querySelector(`button[data-project-id="new-${formIdx}"]`);
+                newDeleteBtn.addEventListener('click', function() {
+                    form.remove();
+                });
+            }
+
+            // Attach click event to add button
+            const addProjectBtn = document.querySelector('.add-project-btn');
+            addProjectBtn.addEventListener('click', function() {
+                addProjectForm();
+            });
+        });
+</script>
+{% endblock %}

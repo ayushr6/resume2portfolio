@@ -28,6 +28,8 @@ class BioForm(forms.ModelForm):
 
 
 
+
+
 class TechnicalSkillsForm(forms.ModelForm):
     class Meta:
         model = TechnicalSkills
@@ -42,3 +44,11 @@ class ProjectsForm(forms.ModelForm):
     class Meta:
         model = Projects
         fields = ['ProjectTitle', 'ProjectLink', 'ProjectDescription']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Add placeholders for existing values
+        self.fields['ProjectTitle'].widget.attrs['placeholder'] = self.instance.ProjectTitle
+        self.fields['ProjectLink'].widget.attrs['placeholder'] = self.instance.ProjectLink
+        self.fields['ProjectDescription'].widget.attrs['placeholder'] = self.instance.ProjectDescription
+
